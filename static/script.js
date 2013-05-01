@@ -134,3 +134,55 @@ function imgResize(options) {
 
   cxt.drawImage(img, 0, 0, width, height);
 }
+
+var i, resizeMode = 'Normal', selectedImage, imagebuttons = document.getElementsByClassName('changeImage'), modebuttons = document.getElementsByClassName('changeResizeMode');
+function $val(id) {
+  return document.getElementById(id).value;
+}
+function changeSlider() {
+  if(resizeMode === 'Normal') {
+    imgResize({'height' : $val('height'), 'width' : $val('width'), 'canvas' : 'Canvas'});
+  } else if(resizeMode === 'Smart') {
+    imgSmartResize({'height' : $val('height'), 'width' : $val('width'), 'canvas' : 'Canvas', 'ocanvas' : 'originalCanvas', 'mode': 1});
+  } else if(resizeMode === 'Smart+') {
+    imgSmartResize({'height' : $val('height'), 'width' : $val('width'), 'canvas' : 'Canvas', 'ocanvas' : 'originalCanvas', 'mode': 2});
+  }
+}
+window.onload = function() {
+  selectedImage = random(0, demoimages.length-1);
+  printImgList(demoimages,'imglist');
+  loadImageToCanvas(demoimages, selectedImage);
+  imagebuttons[selectedImage].className += ' blue';
+  for (i = 0; i < modebuttons.length; i++) {
+    modebuttons[i].onclick = function () {
+      var classes, i, active;
+      for (i = 0; i < modebuttons.length; i++) {
+        classes = modebuttons[i].className.split(/\s+/);
+        active = classes.indexOf('blue');
+        if(active !== -1) {
+          classes[active] = '';
+        }
+        modebuttons[i].className = classes.join(" ");
+      }
+      edgeDetectLines = [];
+      this.className += ' blue';
+      resizeMode = this.innerHTML;
+      changeSlider();
+    }
+  }
+  for (i = 0; i < imagebuttons.length; i++) {
+    imagebuttons[i].onclick = function () {
+      var classes, i, active;
+      for (i = 0; i < imagebuttons.length; i++) {
+        classes = imagebuttons[i].className.split(/\s+/);
+        active = classes.indexOf('blue');
+        if(active !== -1) {
+          classes[active] = '';
+        }
+        imagebuttons[i].className = classes.join(" ");
+      }
+      this.className += ' blue';
+      loadImageToCanvas(demoimages,this.getAttribute("data-imgid"));
+    }
+  }
+};
