@@ -124,49 +124,57 @@ function doColorBook(input, cxt, canvas, mode) {
     i;
   for (y = 0; y < h; y += 1) {
     for (x = 0; x < w; x += 1) {
-      if (mode === 'h') {
+      if (mode === 'm') {
+        newData[x][y] = outputData[pixel];
+      } else if (mode === 'h') {
         tempData = newData[y];
       } else if (mode === 'w') {
         tempData = newData[x];
       }
-      if (outputData[pixel] < 240) {
-        if (tempData === undefined) {
-          if (mode === 'h') {
-            newData[y] = 0;
-          } else if (mode === 'w') {
-            newData[x] = 0;
+      if (mode !== 'm') {
+        if (outputData[pixel] < 240) {
+          if (tempData === undefined) {
+            if (mode === 'h') {
+              newData[y] = 0;
+            } else if (mode === 'w') {
+              newData[x] = 0;
+            }
+            tempData = 0;
           }
-          tempData = 0;
-        }
-        if (mode === 'h') {
-          newData[y] += 1;
-        } else if (mode === 'w') {
-          newData[x] += 1;
-        }
-        tempData += 1;
-      } else {
-        if (tempData === undefined) {
           if (mode === 'h') {
-            newData[y] = 0;
+            newData[y] += 1;
           } else if (mode === 'w') {
-            newData[x] = 0;
+            newData[x] += 1;
           }
-          tempData = 0;
+          tempData += 1;
+        } else {
+          if (tempData === undefined) {
+            if (mode === 'h') {
+              newData[y] = 0;
+            } else if (mode === 'w') {
+              newData[x] = 0;
+            }
+            tempData = 0;
+          }
         }
-      }
-      if ((tempData < minData) || (!minData)) {
-        minData = tempData;
-      }
-      if ((tempData > maxData) || (!maxData)) {
-        maxData = tempData;
+        if ((tempData < minData) || (!minData)) {
+          minData = tempData;
+        }
+        if ((tempData > maxData) || (!maxData)) {
+          maxData = tempData;
+        }
       }
       pixel += 4;
     }
   }
-  for (i = 0; i < newData.length; i += 1) {
-    newData[i] = parseInt((newData[i] - minData) / (maxData - minData) * 255, 10);
+  if (mode === 'm') {
+    return newData;
+  } else {
+    for (i = 0; i < newData.length; i += 1) {
+      newData[i] = parseInt((newData[i] - minData) / (maxData - minData) * 255, 10);
+    }
+    return newData;
   }
-  return newData;
 }
 
 var edgeDetectLines = [];
@@ -217,6 +225,9 @@ function imgSmartResize(options) {
 
     edgeDetectLinesTemp[0] = doColorBook(input, ocxt, ocanvas, 'w');
     edgeDetectLinesTemp[1] = doColorBook(input, ocxt, ocanvas, 'h');
+    if(options.mode === 2) {
+      edgeDetectLinesTemp[2] = doColorBook(input, ocxt, ocanvas, 'm');
+    }
     return edgeDetectLinesTemp;
   }
 

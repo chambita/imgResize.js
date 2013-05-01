@@ -23,10 +23,6 @@ function loadImageToCanvas(json, id) {
   document.getElementById('height').value = json[id].height;
   document.getElementById('width').max = 640;
   document.getElementById('width').value = 640;
-  document.getElementById('heights').max = json[id].height;
-  document.getElementById('heights').value = json[id].height;
-  document.getElementById('widths').max = 640;
-  document.getElementById('widths').value = 640;
   
   document.getElementById('originalCanvas').setAttribute('height',json[id].height);
   document.getElementById('Canvas').setAttribute('height',json[id].height);
@@ -63,10 +59,6 @@ function loadLocalImageToCanvas() {
     document.getElementById('width').max = img.width;
     document.getElementById('width').value = img.width;
     
-    document.getElementById('heights').max = img.height;
-    document.getElementById('heights').value = img.height;
-    document.getElementById('widths').max = img.width;
-    document.getElementById('widths').value = img.width;
     /*
     document.getElementById('originalCanvas').setAttribute('height',img.height);
     document.getElementById('Canvas').setAttribute('height',img.height);
@@ -104,9 +96,9 @@ function printImgList(json, id) {
   for(i=0;i<json.length;i+=1) {
     if(json[i].license !== 'Public Domain') {
       linktext = regex.exec(json[i].source);
-      output += '<li><b onclick="loadImageToCanvas(demoimages,'+i+')">'+json[i].name+'</b> <i>(license: '+json[i].license+', from: <a href="'+json[i].source+'">'+linktext[2]+'</a>)</i></li>';
+      output += '<li><b class="baf bluehover w120 changeImage" data-imgid="'+i+'">'+json[i].name+'</b> <i>(license: '+json[i].license+', from: <a href="'+json[i].source+'">'+linktext[2]+'</a>)</i></li>';
     } else {
-      output += '<li><b onclick="loadImageToCanvas(demoimages,'+i+')">'+json[i].name+'</b> <i>(license: '+json[i].license+')</i></li>';
+      output += '<li><b class="baf bluehover w120 changeImage" data-imgid="'+i+'">'+json[i].name+'</b> <i>(license: '+json[i].license+')</i></li>';
     }
   }
   document.getElementById(id).innerHTML = output;
@@ -142,8 +134,3 @@ function imgResize(options) {
 
   cxt.drawImage(img, 0, 0, width, height);
 }
-
-window.onload = function() {
-  printImgList(demoimages,'imglist');
-  loadImageToCanvas(demoimages, random(0, demoimages.length-1));
-};
