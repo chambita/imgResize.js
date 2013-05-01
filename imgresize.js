@@ -241,7 +241,7 @@ function imgSmartResize(options) {
   }
   
   function indexOfHighest(linesArray) {
-    return linesArray.indexOf(Math.max.apply(null, linesArray));
+    return linesArray.indexOf(Math.min.apply(null, linesArray));
   }
 
   function boringLines(linesArray, max) {
@@ -280,11 +280,11 @@ function imgSmartResize(options) {
     }
     for(oy = 0; oy < ocanvasheight; ++oy) {
       ignorePixels[oy] = [];
-      for(ox = 0; ox < ocanvas.getAttribute('width') - width; ox++) {
+      for(ox = 0; ox < ocanvaswidth-width; ox++) {
         pixelIndex = indexOfHighest(imgMatrix[oy]);
         if(pixelIndex !== -1) {
           ignorePixels[oy][pixelIndex] = true;
-          imgMatrix[oy][pixelIndex] = 0;
+          imgMatrix[oy][pixelIndex] = 255;
         }
       }
     }
@@ -314,7 +314,7 @@ function imgSmartResize(options) {
   } else if(options.mode === 2) {
     for (oy = 0; oy < ocanvasheight; ++oy) {
       for (ox = 0; ox < ocanvaswidth; ++ox) {
-        if (ignorePixels[oy][ox] === undefined) {
+        if (ignorePixels[oy][ox] !== true) {
           r = originalarray[opixel * 4];
           g = originalarray[opixel * 4 + 1];
           b = originalarray[opixel * 4 + 2];
